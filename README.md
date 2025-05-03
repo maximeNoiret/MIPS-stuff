@@ -9,3 +9,5 @@ Basically:
 \[BASE + 0\]    = length\
 \[BASE + 1\]    = capacity\
 \[BASE + 2...\] = data
+
+This should, for example, let me have arrays of different capacity in the same matrix
