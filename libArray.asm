@@ -3,22 +3,23 @@
 
 .text
 # MACROS
-# Function printArray
+# Function printlnArray
 # Input:
-#     $a0: array base
-#     $a1: array length
+#     $a0: array
 # Output:
 #     None
 # Registers used:
 #     $t0: current index
 #     $t1: current address
+#     $t2: array length
 printlnArray:
 	stra
 	li		$t0,	0						# initialize index
-	move	$t1,	$a0						# initialize current address to array base
+	addi	$t1,	$a0,	8				# initialize current address to first array element
+	lw		$t2,	($a0)					# load array length into $t2
 	storeStack($a0)							# save argument
 	printArray_l:
-	beq		$t0,	$a1,	printArray_el	# while (index != length) {
+	beq		$t0,	$t2,	printArray_el	# while (index != length) {
 	lw		$a0,	($t1)					#   $a0 = array[index]
 	jal print_int							#   print($a0 + " ")
 	addi	$t0,	$t0,	1				#   ++index
@@ -30,13 +31,13 @@ printlnArray:
 	return
 
 
-# Function println_int
+# Function print_int
 # Input:
 #     $a0: int to print
 # Output:
 #     None
 # Registers used:
-#     NONE
+#     None
 print_int:
 	storeStack($a0)
 	li		$v0,	1						# load syscall code 1 (print int)
@@ -51,27 +52,26 @@ print_int:
 # Function sumArray
 # Input:
 #     $a0: base of array to sum up
-#     $a1: length of array to sum up
 # Output:
 #     $v0: sum of the array
 # Registers used:
 #     $t0: current element
+#     $t1: array length
 sumArray:
 	# save argument registers (note: might remove these. It would cause the function to corrupt arg regs, but the macro handles it)
 	storeStack($a0)							# store $a0 to avoid losing it
-	storeStack($a1)							# store $a1 to avoid losing it
-	addi	$a1,	$a1,	-1				# length - 1 to get last item
+	lw		$t1,	($a0)					# load array length
+	addi	$t1,	$t1,	-1				# length - 1 to get last item
 	li		$v0,	0						# init result at 0
 	li		$t0,	0						# init index at 0
 	sumArray_l:
-		bltz	$a1,	sumArray_el			# while (index >= 0) {
+		bltz	$t1,	sumArray_el			# while (index >= 0) {
 		lw		$t0,	($a0)				#   $t0 = elem
 		add		$v0,	$v0,	$t0			#   $v0 += $t0
 		addi	$a0,	$a0,	4			#   next elem
-		addi	$a1,	$a1,	-1			#   --index
+		addi	$t1,	$t1,	-1			#   --index
 		j		sumArray_l					# }
 	sumArray_el:
-	loadStack($a1)							# restore $a1 to before function
 	loadStack($a0)							# restore $a0 to before function
 	jr		$ra								# return
 
