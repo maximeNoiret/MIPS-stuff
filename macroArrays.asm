@@ -3,6 +3,7 @@
 
 .text
 
+# TODO
 .macro customAppend(%element, %array_ptr, %array_len, %array_cap)
 	# save argument registers
 	stargs
@@ -25,6 +26,7 @@
     ldargs
 .end_macro
 
+# TODO
 .macro customPrintlnArray(%array_ptr, %array_len)
 	storeStack($a0)							# store $a0 to avoid losing it
 	storeStack($a1)							# store $a1 to avoid losing it
@@ -37,6 +39,8 @@
 	loadStack($a1)							# restore $a1 to pre-function state
 	loadStack($a0)							# restore $a0 to pre-function state
 .end_macro
+
+# TODO
 .macro customPrintlnArrayReg(%array_ptr, %array_len)
 	storeStack($a0)							# store $a0 to avoid losing it
 	storeStack($a1)							# store $a1 to avoid losing it
@@ -57,22 +61,30 @@
 
 .macro init_element(%array_ptr, %offset, %value)
 	lw		$t0,	%array_ptr			# load array base to $t0
+	addi	$t0,	$t0,	8			# skip metadata
     li		$t1,	%value				# load immidate value to $t1
     sw		$t1,	%offset($t0)		# write it at array base + offset
 .end_macro
 
-.macro createArray(%size, %array_ptr, %array_cap)
+.macro set_length(%value, %array_ptr)
+	lw		$t0,	%array_ptr			# get array base (which is also where length is stored)
+	li		$t1,	%value				# get value
+	sw		$t1,	($t0)				# store value as length
+.end_macro
+
+.macro createArray(%size, %array_ptr)
 	storeStack($a0)
 	
 	# function call
 	li		$a0,	%size				# sets size as argument 0
-	sw		$a0,	%array_cap			# sets capacity to size
+	addi	$a0,	$a0,	2			# add two slots for metadata
 	jal		realloc						# allocate size * 4 bytes in heap
 	sw		$v0,	%array_ptr			# store newly created allocation to array_ptr
 	
 	loadStack($a0)
 .end_macro
 
+# TODO
 .macro customSumArray(%array_ptr, %array_len)
 	storeStack($a0)							# store $a0 to avoid losing it
 	storeStack($a1)							# store $a1 to avoid losing it
@@ -86,12 +98,14 @@
 	loadStack($a0)							# restore $a0 to pre-function state
 .end_macro
 
+# TODO
 .macro customAvgArray(%array_ptr, %array_len)
 	customSumArray(%array_ptr, %array_len)	# get the sum of the array
 	lw		$t0,	%array_len				# load in its length
 	div		$v0,	$v0,	$t0				# sum / length = avg
 .end_macro
 
+# TODO
 .macro customMaxArray(%array_ptr, %array_len)
 	storeStack($a0)							# store $a0 to avoid losing it
 	storeStack($a1)							# store $a1 to avoid losing it
@@ -105,6 +119,7 @@
 	loadStack($a0)							# restore $a0 to pre-function state
 .end_macro
 
+# TODO
 .macro customMinArray(%array_ptr, %array_len)
 	storeStack($a0)							# store $a0 to avoid losing it
 	storeStack($a1)							# store $a1 to avoid losing it
@@ -118,6 +133,7 @@
 	loadStack($a0)							# restore $a0 to pre-function state
 .end_macro
 
+# TODO
 .macro customSortArray(%array_ptr, %array_len)
 	storeStack($a0)							# store $a0 to avoid losing it
 	storeStack($a1)							# store $a1 to avoid losing it
@@ -131,6 +147,7 @@
 	loadStack($a0)							# restore $a0 to pre-function state
 .end_macro
 
+# TODO
 .macro customMedianArray(%array_ptr, %array_len)
 	storeStack($a0)
 	storeStack($a1)
@@ -144,6 +161,7 @@
 	loadStack($a0)
 .end_macro
 
+# TODO
 .macro customBinarySearch(%array_ptr, %array_len, %target) # no min since when calling, it's 0.
 	stargs  # check if can remove this.
 	

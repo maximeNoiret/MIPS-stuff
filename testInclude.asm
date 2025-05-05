@@ -13,7 +13,7 @@
 
 .text
 .include "functionMacros.asm"
-.include "dynArrayMacros.asm"
+.include "macroArrays.asm"
 
 # WELCOME to stack abuse simulator :3
 
@@ -99,20 +99,21 @@ arrayTest:
 initArray:
 	stra
 	# creation of arrays
-	createArray(5, array0_ptr, array0_cap) # init array0
-	createArray(5, array1_ptr, array1_cap) # init array1
+	createArray(5, array0_ptr) # init array0
+	createArray(5, array1_ptr) # init array1
 	
 	# elements insertion
 	init_element(array0_ptr, 0, 3)		# write 3 to array0[0]
 	init_element(array0_ptr, 4, 19)		# write 7 to array0[1]
-	init_element(array0_ptr, 8, 200)		# write 2 to array0[2]
-	init_element(array0_ptr, 12, 80)		# write 8 to array0[3]
+	init_element(array0_ptr, 8, 200)	# write 2 to array0[2]
+	init_element(array0_ptr, 12, 80)	# write 8 to array0[3]
 	init_element(array0_ptr, 16, 5)		# write 5 to array0[4]
-	swi(5, array0_len)					# set length to 5
+	set_length(5, array0_ptr)			# set length to 5
 	
 	init_element(array1_ptr, 0, 8)		# write 8 to array1[0]
 	init_element(array1_ptr, 4, 14)		# write 14 to array1[1]
-	swi(2, array1_len)					# set length to 2
+	set_length(2, array1_ptr)			# set length to 2
 	return
 
-.include "libDynamicArray.asm"
+.include "libFunctions.asm"
+.include "libArray.asm"
