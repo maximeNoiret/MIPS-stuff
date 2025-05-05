@@ -31,63 +31,63 @@ arrayTest:
 	jal print_int
 	jal newline
 	
-	print("Adding an element to array1, no reallocation needed. (2/5) -> (3/5)\n")
-	customAppend(13, array1_ptr, array1_len, array1_cap)
-	customPrintlnArray(array1_ptr, array1_len)
+	#print("Adding an element to array1, no reallocation needed. (2/5) -> (3/5)\n")
+	#customAppend(13, array1_ptr, array1_len, array1_cap)
+	#customPrintlnArray(array1_ptr, array1_len)
 	
-	print("Now adding an element to array0, reallocation needed! (5/5) -> (6/10)\n")
-	customAppend(32, array0_ptr, array0_len, array0_cap)
-	customPrintlnArray(array0_ptr, array0_len)
+	#print("Now adding an element to array0, reallocation needed! (5/5) -> (6/10)\n")
+	#customAppend(32, array0_ptr, array0_len, array0_cap)
+	#customPrintlnArray(array0_ptr, array0_len)
 	
-	print("The sum of this last array is: ")
-	customSumArray(array0_ptr, array0_len)
-	printRegInt($v0)
-	jal newline
+	#print("The sum of this last array is: ")
+	#customSumArray(array0_ptr, array0_len)
+	#printRegInt($v0)
+	#jal newline
 	
-	print("The average of this last array is: ")
-	customAvgArray(array0_ptr, array0_len)
-	printRegInt($v0)
-	jal newline
+	#print("The average of this last array is: ")
+	#customAvgArray(array0_ptr, array0_len)
+	#printRegInt($v0)
+	#jal newline
 	
-	print("The max of this last array is: ")
-	customMaxArray(array0_ptr, array0_len)
-	printRegInt($v0)
-	jal newline
+	#print("The max of this last array is: ")
+	#customMaxArray(array0_ptr, array0_len)
+	#printRegInt($v0)
+	#jal newline
 	
-	print("The min of this last array is: ")
-	customMinArray(array0_ptr, array0_len)
-	printRegInt($v0)
-	jal newline
+	#print("The min of this last array is: ")
+	#customMinArray(array0_ptr, array0_len)
+	#printRegInt($v0)
+	#jal newline
 	
-	print("The median of this last array is: ")
-	customMedianArray(array0_ptr, array0_len)
-	printRegInt($v0)
-	jal newline
+	#print("The median of this last array is: ")
+	#customMedianArray(array0_ptr, array0_len)
+	#printRegInt($v0)
+	#jal newline
 	
-	print("As you can see, the median isn't the average of the two middles. Oh well! :3\nJust add a new element lmao\n")
-	customAppend(92, array0_ptr, array0_len, array0_cap)
-	customPrintlnArray(array0_ptr, array0_len)
+	#print("As you can see, the median isn't the average of the two middles. Oh well! :3\nJust add a new element lmao\n")
+	#customAppend(92, array0_ptr, array0_len, array0_cap)
+	#customPrintlnArray(array0_ptr, array0_len)
 	
-	print("The median of this last array is: ")
-	customMedianArray(array0_ptr, array0_len)
-	printRegInt($v0)
-	jal newline
+	#print("The median of this last array is: ")
+	#customMedianArray(array0_ptr, array0_len)
+	#printRegInt($v0)
+	#jal newline
 	
-	print("Sorting the array...\n")
-	customSortArray(array0_ptr, array0_len)
-	print("Sorted array: ")
-	customPrintlnArray(array0_ptr, array0_len)
+	#print("Sorting the array...\n")
+	#customSortArray(array0_ptr, array0_len)
+	#print("Sorted array: ")
+	#customPrintlnArray(array0_ptr, array0_len)
 	
-	print("The array now being sorted, we can do a binary search on it.\nIndex of 80: ")
-	customBinarySearch(array0_ptr, array0_len, 80)
-	printRegInt($v0)
-	jal newline
+	#print("The array now being sorted, we can do a binary search on it.\nIndex of 80: ")
+	#customBinarySearch(array0_ptr, array0_len, 80)
+	#printRegInt($v0)
+	#jal newline
 	
-	print("The binary search works! But what if the element isn't here...?\nIndex of 42: ")
-	customBinarySearch(array0_ptr, array0_len, 42)
-	printRegInt($v0)
-	jal newline
-	print("We see it's -1, the return value when not found. Same for $v1, which is 0 when found, and -1 when not\n")
+	#print("The binary search works! But what if the element isn't here...?\nIndex of 42: ")
+	#customBinarySearch(array0_ptr, array0_len, 42)
+	#printRegInt($v0)
+	#jal newline
+	#print("We see it's -1, the return value when not found. Same for $v1, which is 0 when found, and -1 when not\n")
 	
 	print("Current value of $a0: ")
 	jal print_int

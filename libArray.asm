@@ -64,6 +64,7 @@ sumArray:
 	addi	$t1,	$t1,	-1				# length - 1 to get last item
 	li		$v0,	0						# init result at 0
 	li		$t0,	0						# init index at 0
+	addi	$a0,	$a0,	8				# skip meta data
 	sumArray_l:
 		bltz	$t1,	sumArray_el			# while (index >= 0) {
 		lw		$t0,	($a0)				#   $t0 = elem
@@ -92,6 +93,7 @@ maxArray:
 	addi	$t1,	$t1,	-1				# length - 1 to get last item
 	li		$v0,	0						# init result at 0
 	li		$t0,	0						# init index at 0
+	addi	$a0,	$a0,	8				# skip meta data
 	maxArray_l:
 		bltz	$t1,	maxArray_el			# while (index >= 0) {
 		lw		$t0,	($a0)				#   $t0 = elem
@@ -125,7 +127,7 @@ minArray:
 	li		$v0,	0x7fffffff				# init result at max signed integer
 	li		$t0,	0						# init index at 0
 	minArray_l:
-		bltz	$t1,	minArray_el			# while (index >= 0) {
+		blt		$t1,	2,	minArray_el		# while (index >= 2) { 2 because of meta data
 		lw		$t0,	($a0)				#   $t0 = elem
 		ble		$v0,	$t0,	min_false	#   if ($v0 > $t0) {
 		move	$v0,	$t0					#     $v0 = $t0
@@ -185,8 +187,8 @@ moveArray:
 # Input:
 #     $a0: array
 #     $a1: element (word)
-#     $a2: array length
-#     $a3: array capacity
+#     $a2: array length*
+#     $a3: array capacity*
 # Output:
 #     $v0: 0 if no realloc, 1 if realloc occured
 #     $a0: becomes new array base in case of realloc
@@ -195,12 +197,15 @@ moveArray:
 #     Yes, argument registers are being modified. However, as someone said:
 #         "If C (a language obsessed with safety) does it, you’re fine."
 # Registers used:
-#     None
+#     $t0: array length
+#     $t1: array capacity
 append:
 	stra
 	li		$v0,	0						# default $v0 at 0
+	lw		$t0,	($a0)					# load in array length
+	lw		$t1,	4($a0)					# load in array capacity
 	# check if array full
-	bne		$a2,	$a3,	skip_realloc	# if not equal, means free space, therefore skip realloc
+	bne		$t0,	$a3,	skip_realloc	# if not equal, means free space, therefore skip realloc
 	
 	# if full, reallocate double the space in heap
 	sll		$a3,	$a3,	1				# double capacity
