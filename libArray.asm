@@ -187,8 +187,6 @@ moveArray:
 # Input:
 #     $a0: array
 #     $a1: element (word)
-#     $a2: array length*
-#     $a3: array capacity*
 # Output:
 #     $v0: 0 if no realloc, 1 if realloc occured
 #     $a0: becomes new array base in case of realloc
@@ -205,18 +203,18 @@ append:
 	lw		$t0,	($a0)					# load in array length
 	lw		$t1,	4($a0)					# load in array capacity
 	# check if array full
-	bne		$t0,	$a3,	skip_realloc	# if not equal, means free space, therefore skip realloc
+	bne		$t0,	$t1,	skip_realloc	# if not equal, means free space, therefore skip realloc
 	
 	# if full, reallocate double the space in heap
-	sll		$a3,	$a3,	1				# double capacity
+	sll		$t1,	$t1,	1				# double capacity
+	sw		$t1,	4($a0)					# update capacity in array meta data
+	addi	$t1,	$t1,	2				# add 2 slots for metadata during realloc
 	storeStack($a0)							# save old array base to stack
-	move	$a0,	$a3						# load amount of capacity as argument for realloc
+	move	$a0,	$t1						# load amount of capacity as argument for realloc
 	jal realloc								# realloc space in heap for new array
 	move	$a0,	$v0						# update array base
 	storeStack($a1)							# save $a1
 	lw		$a1,	4($sp)					# load old array base as oldArray base argument
-	move	$a2,	$a3						# load $a3 as oldArray capacity argument
-	srl		$a2,	$a2,	1				# cancel the doubling to become oldArray capacity
 	jal 	moveArray						# move array content from old heap location to new one
 	lw		$a1,	($sp)					# restore $a1
 	addi	$sp,	$sp,	8				# deallocate 2 word on stack
@@ -227,13 +225,13 @@ append:
 	
 	# add element to end of array
 	skip_realloc:
-	addi	$a2,	$a2,	1				# add one to $a2
-	storeStack($a2)							# save $a2
-	sll		$a2,	$a2,	2				# multiply length by 4 to become an offset
-	addi	$a2,	$a2,	-4				# come back one word to be at end of elements
-	add		$a2,	$a2,	$a0				# add offset to array base
-	sw		$a1,	($a2)					# store element in array
-	loadStack($a2)							# restore $a2
+	lw		$t0,	($a0)					# get length
+	addi	$t0,	$t0,	1				# add 1 to length (since we're adding an element)
+	sw		$t0,	($a0)					# store change in length
+	sll		$t0,	$t0,	2				# multiply length by 4 to become an offset
+	addi	$t0,	$t0,	4				# add 2 to skip meta data + remove one to be at end of elements
+	add		$t0,	$t0,	$a0				# add offset to array base
+	sw		$a1,	($t0)					# store element in array
 	return
 
 

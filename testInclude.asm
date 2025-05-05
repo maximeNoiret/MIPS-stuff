@@ -21,8 +21,8 @@ arrayTest:
 	print("This program was made to test out dynamic arrays, .include, parametered macros and saving registers.\n")
 	jal		initArray
 	
-	customPrintlnArray(array0_ptr, array0_len)
-	customPrintlnArray(array1_ptr, array1_len)
+	customPrintlnArray(array0_ptr)
+	customPrintlnArray(array1_ptr)
 	
 	li		$a0,	13					 # write 13 to $a0
 	print("Wrote 13 to $a0\n")
@@ -31,33 +31,33 @@ arrayTest:
 	jal print_int
 	jal newline
 	
-	#print("Adding an element to array1, no reallocation needed. (2/5) -> (3/5)\n")
-	#customAppend(13, array1_ptr, array1_len, array1_cap)
-	#customPrintlnArray(array1_ptr, array1_len)
+	print("Adding an element to array1, no reallocation needed. (2/5) -> (3/5)\n")
+	customAppend(13, array1_ptr)
+	customPrintlnArray(array1_ptr)
 	
-	#print("Now adding an element to array0, reallocation needed! (5/5) -> (6/10)\n")
-	#customAppend(32, array0_ptr, array0_len, array0_cap)
-	#customPrintlnArray(array0_ptr, array0_len)
+	print("Now adding an element to array0, reallocation needed! (5/5) -> (6/10)\n")
+	customAppend(32, array0_ptr)
+	customPrintlnArray(array0_ptr)
 	
-	#print("The sum of this last array is: ")
-	#customSumArray(array0_ptr, array0_len)
-	#printRegInt($v0)
-	#jal newline
+	print("The sum of this last array is: ")
+	customSumArray(array0_ptr)
+	printRegInt($v0)
+	jal newline
 	
-	#print("The average of this last array is: ")
-	#customAvgArray(array0_ptr, array0_len)
-	#printRegInt($v0)
-	#jal newline
+	print("The average of this last array is: ")
+	customAvgArray(array0_ptr)
+	printRegInt($v0)
+	jal newline
 	
-	#print("The max of this last array is: ")
-	#customMaxArray(array0_ptr, array0_len)
-	#printRegInt($v0)
-	#jal newline
+	print("The max of this last array is: ")
+	customMaxArray(array0_ptr)
+	printRegInt($v0)
+	jal newline
 	
-	#print("The min of this last array is: ")
-	#customMinArray(array0_ptr, array0_len)
-	#printRegInt($v0)
-	#jal newline
+	print("The min of this last array is: ")
+	customMinArray(array0_ptr)
+	printRegInt($v0)
+	jal newline
 	
 	#print("The median of this last array is: ")
 	#customMedianArray(array0_ptr, array0_len)
