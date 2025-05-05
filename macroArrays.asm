@@ -136,13 +136,13 @@
 .end_macro
 
 # TODO
-.macro customBinarySearch(%array_ptr, %array_len, %target) # no min since when calling, it's 0.
+.macro customBinarySearch(%array_ptr, %target) # no min since when calling, it's 0.
 	stargs  # check if can remove this.
 	
 	# function call
 	lw		$a0,	%array_ptr				# set array as array pointer
 	li		$a1,	0						# set index min as 0
-	lw		$a2,	%array_len
+	lw		$a2,	($a0)					# load in array length
 	addi	$a2,	$a2,	-1				# set index max as length - 1
 	li		$a3,	%target					# set target as target
 	jal		binarySearch					# call function

@@ -238,12 +238,12 @@ append:
 # Function sortArray
 # Input:
 #     $a0: array base
-#     $a1: array length
 # Output:
 #     None
 # Registers used:
 #     $t0: i
 #     $t1: j					Note: might be able to save this register by checking [j] == $a0 instead of j == 0
+#     $t2: array length
 #     $t3: j offset -> A[j]
 #     $t4: A[j-1]
 #     $t5: A[j] element
@@ -252,12 +252,14 @@ append:
 #     Original array is sorted.
 #     TODO: Shift every register number down by 1 after $t1
 #     TODO: Find a way to use less registers maybe
+#     FIXME: this is broken :3
 sortArray:
 	stra
 	li		$t0,	1						# i = 1
+	lw		$t2,	($a0)					# load in array length
 	sortArray_l0:
-	beq		$t0,	$a1,	sortArray_el0	# while (i < $a1) {
-	move	$t1,	$t0						#   j = i
+	beq		$t0,	$t2,	sortArray_el0	# while (i < length) {
+	addi	$t1,	$t0,	2				#   j = i + 2 (skip metadata)
 	sortArray_l1:							#   while (j > 0 && $a0[j-1] > $a0[j])
 	beqz	$t1,	sortArray_el1			#   check if j == 0
 	sll		$t3,	$t1,	2				#   (j ofst) = j * 4
@@ -281,14 +283,16 @@ sortArray:
 # Function medianArray
 # Input:
 #     $a0: array
-#     $a1: array_len
+#     $a1: array_len*
 # Output:
 #     $v0: array median
 # Registers used:
 #     $t0: $a1 % 8
+#     $t1: array length
 # Notes:
 #     This function is VERY BADLY written (it was written during a math class leave me alone)
 #     TODO: obviously, fix it so it's not bad lmao
+#     TODO: adapt to new storing techniques
 medianArray:
 	stra
 	
@@ -345,6 +349,8 @@ medianArray:
 # Registers used:
 #     $t0: index mid
 #     $t1: offset mid ($t0 * 4) -> address mid ([($t1)]) -> middle element (array[($t1)])
+# Note:
+#     FIXME: This doesn't follow now storage techniques.
 binarySearch:
 	stra
 	
@@ -354,9 +360,10 @@ binarySearch:
 	return
 	
 	a1lea2:
-	bne		$a1,	$a2,	a1nea2			# if $a1 = $2...
+	bne		$a1,	$a2,	a1nea2			# if $a1 = $a2...
 	move	$t0,	$a1						# move min index to result in case it's correct
 	sll		$t1,	$a1,	2				# make the index as an offset
+	add		$t1,	$t1,	8				# skip meta data
 	add		$t1,	$t1,	$a0				# add array base to make it a pointer
 	lw		$t1,	($t1)					# load the element pointed at
 	beq		$t1,	$a3		found			# ...AND array[($a1)] != target, return index -1 and code -1
@@ -372,6 +379,7 @@ binarySearch:
 	# since it's an index (and not an offset), there is no way it can be misaligned to words.
 	# get middle offset
 	sll		$t1,	$t0,	2				# multiply middle index by 4 to become offset
+	addi	$t1,	$t1,	8				# skip meta data
 	# get middle pointer
 	add		$t1,	$t1,	$a0				# we then add onto that the base of the array to become a pointer
 	lw		$t1,	($t1)					# then we read the value in this pointer to get the middle element
@@ -383,14 +391,14 @@ binarySearch:
 	li		$v1,	0						# return code 0 since it was found
 	return
 	notEqual:
-	bgt		$t1,	$a3,	notLess			# if array[($t1)] < target, binarySearch($a0, $a1, $t0 - 1, target)
+	bgt		$t1,	$a3,	notLess			# if array[($t1)] < target, binarySearch($a0, $t0 + 1, $a2, target)
 	storeStack($a1)							# store the argument to restore it when exiting the function
 	addi	$a1,	$t0,	1				# set (mid index + 1) as min for next level
 	jal		binarySearch					# every other arguments are the same, recall function
 	loadStack($a1)							# restore previous argument
 	return
 	notLess:
-	blt		$t1,	$a3,	wtf				# if array[($t1)] > target, binarySearch($a0, $t0 + 1, $a2, target)
+	blt		$t1,	$a3,	wtf				# if array[($t1)] > target, binarySearch($a0, $a1, $t0 - 1, target)
 	storeStack($a2)							# store the argument to restore it when exiting function
 	addi	$a2,	$t0,	-1				# set (mid index - 1) as max for next level
 	jal		binarySearch					# every other arguments are the same, recall function

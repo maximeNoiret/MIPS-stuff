@@ -65,8 +65,8 @@ arrayTest:
 	#jal newline
 	
 	#print("As you can see, the median isn't the average of the two middles. Oh well! :3\nJust add a new element lmao\n")
-	#customAppend(92, array0_ptr, array0_len, array0_cap)
-	#customPrintlnArray(array0_ptr, array0_len)
+	#customAppend(92, array0_ptr)
+	#customPrintlnArray(array0_ptr)
 	
 	#print("The median of this last array is: ")
 	#customMedianArray(array0_ptr, array0_len)
@@ -74,20 +74,24 @@ arrayTest:
 	#jal newline
 	
 	#print("Sorting the array...\n")
-	#customSortArray(array0_ptr, array0_len)
+	#customSortArray(array0_ptr)
 	#print("Sorted array: ")
-	#customPrintlnArray(array0_ptr, array0_len)
+	#customPrintlnArray(array0_ptr)
 	
-	#print("The array now being sorted, we can do a binary search on it.\nIndex of 80: ")
-	#customBinarySearch(array0_ptr, array0_len, 80)
-	#printRegInt($v0)
-	#jal newline
+	print("The array being sorted, we can do a binary search on it.\nIndex of 80: ")
+	customBinarySearch(array0_ptr, 80)
+	printRegInt($v0)
+	print(", ")
+	printRegInt($v1)
+	jal newline
 	
-	#print("The binary search works! But what if the element isn't here...?\nIndex of 42: ")
-	#customBinarySearch(array0_ptr, array0_len, 42)
-	#printRegInt($v0)
-	#jal newline
-	#print("We see it's -1, the return value when not found. Same for $v1, which is 0 when found, and -1 when not\n")
+	print("The binary search works! But what if the element isn't here...?\nIndex of 42: ")
+	customBinarySearch(array0_ptr, 42)
+	printRegInt($v0)
+	print(", ")
+	printRegInt($v1)
+	jal newline
+	print("We see it's -1, the return value when not found. Same for $v1, which is 0 when found, and -1 when not\n")
 	
 	print("Current value of $a0: ")
 	jal print_int
@@ -104,10 +108,10 @@ initArray:
 	
 	# elements insertion
 	init_element(array0_ptr, 0, 3)		# write 3 to array0[0]
-	init_element(array0_ptr, 4, 19)		# write 7 to array0[1]
-	init_element(array0_ptr, 8, 200)	# write 2 to array0[2]
+	init_element(array0_ptr, 4, 5)		# write 7 to array0[1]
+	init_element(array0_ptr, 8, 19)	# write 2 to array0[2]
 	init_element(array0_ptr, 12, 80)	# write 8 to array0[3]
-	init_element(array0_ptr, 16, 5)		# write 5 to array0[4]
+	init_element(array0_ptr, 16, 200)		# write 5 to array0[4]
 	set_length(5, array0_ptr)			# set length to 5
 	
 	init_element(array1_ptr, 0, 8)		# write 8 to array1[0]
