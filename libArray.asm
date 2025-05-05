@@ -2,7 +2,7 @@
 	space:		.asciiz	" "
 
 .text
-# MACROS
+
 # Function printlnArray
 # Input:
 #     $a0: array
@@ -80,29 +80,28 @@ sumArray:
 # Function maxArray
 # Input:
 #     $a0: base of array
-#     $a1: length of array
 # Output:
 #     $v0: max of the array
 # Registers used:
 #     $t0: current element
+#     $t1: array length
 maxArray:
 	# save argument registers (note: might remove these. It would cause the function to corrupt arg regs, but the macro handles it)
 	storeStack($a0)							# store $a0 to avoid losing it
-	storeStack($a1)							# store $a1 to avoid losing it
-	addi	$a1,	$a1,	-1				# length - 1 to get last item
+	lw		$t1,	($a0)					# get length
+	addi	$t1,	$t1,	-1				# length - 1 to get last item
 	li		$v0,	0						# init result at 0
 	li		$t0,	0						# init index at 0
 	maxArray_l:
-		bltz	$a1,	maxArray_el			# while (index >= 0) {
+		bltz	$t1,	maxArray_el			# while (index >= 0) {
 		lw		$t0,	($a0)				#   $t0 = elem
 		bge		$v0,	$t0,	max_false	#   if ($v0 < $t0) {
 		move	$v0,	$t0					#     $v0 = $t0
 		max_false:							#   }
 		addi	$a0,	$a0,	4			#   next elem
-		addi	$a1,	$a1,	-1			#   --index
+		addi	$t1,	$t1,	-1			#   --index
 		j		maxArray_l					# }
 	maxArray_el:
-	loadStack($a1)							# restore $a1 to before function
 	loadStack($a0)							# restore $a0 to before function
 	jr		$ra								# return
 	
@@ -110,32 +109,31 @@ maxArray:
 # Function minArray
 # Input:
 #     $a0: base of array
-#     $a1: length of array
 # Output:
 #     $v0: min of the array
 # Registers used:
 #     $t0: current element
+#     $t1: array length
 # Note:
 #     FIXME: kinda dumb to have a whole copy of maxArray just to change ONE letter (bge -> ble) lol
 #         nvm, we also set $v0 at max signed integer and not 0
 minArray:
 	# save argument registers (note: might remove these. It would cause the function to corrupt arg regs, but the macro handles it)
 	storeStack($a0)							# store $a0 to avoid losing it
-	storeStack($a1)							# store $a1 to avoid losing it
-	addi	$a1,	$a1,	-1				# length - 1 to get last item
+	lw		$t1,	($a0)					# get length
+	addi	$t1,	$t1,	-1				# length - 1 to get last item
 	li		$v0,	0x7fffffff				# init result at max signed integer
 	li		$t0,	0						# init index at 0
 	minArray_l:
-		bltz	$a1,	minArray_el			# while (index >= 0) {
+		bltz	$t1,	minArray_el			# while (index >= 0) {
 		lw		$t0,	($a0)				#   $t0 = elem
 		ble		$v0,	$t0,	min_false	#   if ($v0 > $t0) {
 		move	$v0,	$t0					#     $v0 = $t0
 		min_false:							#   }
 		addi	$a0,	$a0,	4			#   next elem
-		addi	$a1,	$a1,	-1			#   --index
+		addi	$t1,	$t1,	-1			#   --index
 		j		minArray_l					# }
 	minArray_el:
-	loadStack($a1)							# restore $a1 to before function
 	loadStack($a0)							# restore $a0 to before function
 	jr		$ra								# return
 
@@ -157,7 +155,6 @@ realloc:
 # Input:
 #     $a0: newArray base
 #     $a1: oldArray base
-#     $a2: oldArray capacity
 # Output:
 #     None
 # Registers used:
@@ -165,12 +162,15 @@ realloc:
 #     $t1: current oldAddress
 #     $t2: current element
 #     $t3: current newAddress
+#     $t4: oldArray capacity
 moveArray:
 	li 		$t0,	0						# initialize index
 	move	$t1,	$a1						# initialize current oldAddress
 	move	$t3,	$a0						# initialize current newAddress
+	lw		$t4,	($a1)					# initialize old array capacity
+	addi	$t4,	$t4,	2				# add 2 to capacity for meta data
 	moveArray_l:
-	beq		$t0,	$a2,	moveArray_el	# while (index != oldArray capacity) {
+	beq		$t0,	$t4,	moveArray_el	# while (index != oldArray capacity) {
 	lw		$t2,	($t1)					#   $t2 = oldArray[index]
 	sw		$t2,	($t3)					#   newArray[index] = $t2
 	addi	$t0,	$t0,	1				#   ++index
