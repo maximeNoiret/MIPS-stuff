@@ -6,10 +6,7 @@
 	array1_len: .word 0
 	array1_cap: .word 0
 	
-	rpgPrompt0: .asciiz "Your HP: "
-	rpgPrompt1: .asciiz " | Enemy HP: "
-	rpgPrompt2: .asciiz "\n1. Attack | 2. Defend | 3. Potion ("
-	rpgPrompt3: .asciiz " left)\n> "
+	comma:		.asciiz	", "
 
 .text
 .include "functionMacros.asm"
@@ -21,7 +18,12 @@ arrayTest:
 	print("This program was made to test out dynamic arrays, .include, parametered macros and saving registers.\n")
 	jal		initArray
 	
-	customPrintlnArray(array0_ptr)
+	loop:
+	customAppend(1337, array0_ptr)
+	printRegInt($v0)
+	jal newline
+	j loop
+	
 	customPrintlnArray(array1_ptr)
 	
 	li		$a0,	13					 # write 13 to $a0
@@ -36,7 +38,7 @@ arrayTest:
 	customPrintlnArray(array1_ptr)
 	
 	print("Now adding an element to array0, reallocation needed! (5/5) -> (6/10)\n")
-	customAppend(32, array0_ptr)
+	customAppend(216, array0_ptr)
 	customPrintlnArray(array0_ptr)
 	
 	print("The sum of this last array is: ")
@@ -64,9 +66,9 @@ arrayTest:
 	#printRegInt($v0)
 	#jal newline
 	
-	#print("As you can see, the median isn't the average of the two middles. Oh well! :3\nJust add a new element lmao\n")
-	#customAppend(92, array0_ptr)
-	#customPrintlnArray(array0_ptr)
+	print("As you can see, the median isn't the average of the two middles. Oh well! :3\nJust add a new element lmao\n")
+	customAppend(257, array0_ptr)
+	customPrintlnArray(array0_ptr)
 	
 	#print("The median of this last array is: ")
 	#customMedianArray(array0_ptr, array0_len)
@@ -81,14 +83,14 @@ arrayTest:
 	print("The array being sorted, we can do a binary search on it.\nIndex of 80: ")
 	customBinarySearch(array0_ptr, 80)
 	printRegInt($v0)
-	print(", ")
+	printString(comma)
 	printRegInt($v1)
 	jal newline
 	
 	print("The binary search works! But what if the element isn't here...?\nIndex of 42: ")
 	customBinarySearch(array0_ptr, 42)
 	printRegInt($v0)
-	print(", ")
+	printString(comma)
 	printRegInt($v1)
 	jal newline
 	print("We see it's -1, the return value when not found. Same for $v1, which is 0 when found, and -1 when not\n")
