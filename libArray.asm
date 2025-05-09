@@ -190,10 +190,6 @@ moveArray:
 # Output:
 #     $v0: 0 if no realloc, 1 if realloc occured
 #     $a0: becomes new array base in case of realloc
-#     $a2: becomes new array length
-#     $a3: becomes new array capacity in case of realloc
-#     Yes, argument registers are being modified. However, as someone said:
-#         "If C (a language obsessed with safety) does it, you’re fine."
 # Registers used:
 #     $t0: array length
 #     $t1: array capacity

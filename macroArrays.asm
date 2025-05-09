@@ -88,6 +88,7 @@
 .macro customAvgArray(%array_ptr)
 	customSumArray(%array_ptr)				# get the sum of the array
 	lw		$t0,	%array_ptr				# load in its length
+	lw		$t0,	($t0)					# get length
 	div		$v0,	$v0,	$t0				# sum / length = avg
 .end_macro
 

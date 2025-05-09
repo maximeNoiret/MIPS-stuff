@@ -18,12 +18,6 @@ arrayTest:
 	print("This program was made to test out dynamic arrays, .include, parametered macros and saving registers.\n")
 	jal		initArray
 	
-	loop:
-	customAppend(1337, array0_ptr)
-	printRegInt($v0)
-	jal newline
-	j loop
-	
 	customPrintlnArray(array1_ptr)
 	
 	li		$a0,	13					 # write 13 to $a0
@@ -66,7 +60,7 @@ arrayTest:
 	#printRegInt($v0)
 	#jal newline
 	
-	print("As you can see, the median isn't the average of the two middles. Oh well! :3\nJust add a new element lmao\n")
+	#print("As you can see, the median isn't the average of the two middles. Oh well! :3\nJust add a new element lmao\n")
 	customAppend(257, array0_ptr)
 	customPrintlnArray(array0_ptr)
 	
