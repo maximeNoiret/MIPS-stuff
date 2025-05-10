@@ -7,7 +7,7 @@
 
 .include "functionMacros.asm"
 .include "matrixMacros.asm"
-.include "dynArrayMacros.asm"
+.include "macroArrays.asm"
 
 
 main:
@@ -25,4 +25,4 @@ main:
 
 .include "libFunctions.asm"
 .include "libMatrix.asm"
-.include "libDynamicArray.asm"
+.include "libArray.asm"
