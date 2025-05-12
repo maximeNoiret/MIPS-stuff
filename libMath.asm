@@ -55,16 +55,21 @@ power:
 # Note:
 #     Has complexity of O(n). Do not use. Only for educational purposes. Instead use power (Olog2(n))
 dumbPower:
-	stra
+	addi	$sp,	$sp,	-4		# allocate a word in stack
+	sw		$ra,	($sp)
 	
 	# if $a1 == 1, return $a0
 	bne		$a1,	1,	notOneDumb
-	move	$v0,	$a0
-	return
+	or		$v0,	$zero,	$a0
+	lw		$ra,	($sp)
+	addi	$sp,	$sp,	4
+	jr		$ra
 	# else, return $a0 * dumbPower($a0, $a1 - 1)
 	notOneDumb:
 	addi	$a1,	$a1,	-1
 	jal		dumbPower
 	mul		$v0,	$v0,	$a0
 
-	return
+	lw		$ra,	($sp)
+	addi	$sp,	$sp,	4
+	jr		$ra
