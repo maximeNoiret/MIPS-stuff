@@ -22,7 +22,8 @@ j main
 # Registers used:
 #     $s0: T[] ($a0 is used by printing, so have a copy)
 #     $t0: i
-#     $t1: loop condition AND THEN offset -> pointer -> element of T[i]
+#     $t1: loop condition
+#          AND THEN offset -> pointer -> element of T[i]
 # Note:
 #     Are we REALLY supposed to reproduce setw() in MIPS?????
 AfficherTableau:
@@ -36,7 +37,7 @@ AfficherTableau:
 	syscall											# cout << "T : ";
 	or		$t0,	$zero,	$zero					# unsigned i = 0;
 	AfficherTableau_l:
-	slt		$t1,	$t0,	$a1						# if i < N, $t2 = 1
+	slt		$t1,	$t0,	$a1						# if i < N, $t1 = 1
 	beq		$t1,	$zero,	AfficherTableau_el		# while (i < N) AKA until !(i < N)
 	sll		$t1,	$t0,	2						# i * 4 to get offset
 	add		$t1,	$t1,	$s0						# add array base to get pointer
@@ -120,7 +121,7 @@ Sort:
 			# while !(T[j] <= T[j+1])   PS: is there a better way for gt?
 			beq		$t1,	$t2,	Sort_el1		# while (T[j] != T[j+1] && ...
 			slt		$t0,	$t1,	$t2				#   if T[j] < T[j+1], $t0 = 1
-			bne		$t0,	$zero,	Sort_el1		# ... T[j] < T[j+1])
+			bne		$t0,	$zero,	Sort_el1		# ... T[j] !< T[j+1])
 			or		$a1,	$zero,	$s1				# set j as argument $a1 for Swap
 			jal		Swap							# Swap(T, j);
 			lw		$a1,	8($sp)					# restore N as $a1 from stack (might be bad memory ethics?? maybe consider using an $s register?)
@@ -140,10 +141,10 @@ Sort:
 	jr		$ra										# return
 
 
-
 main:
 	la		$a0,	T								# load T as arg
-	lw		$a1,	TailleT							# load TailleT as arg
+	la		$a1,	TailleT							# get TailleT address
+	lw		$a1,	($a1)							# load TailleT as arg
 	jal		AfficherTableau							# AfficherTableau(T, TailleT);
 	jal		Sort									# Sort(T, TailleT);
 	jal		AfficherTableau							# AfficherTableau(T,TailleT);

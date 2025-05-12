@@ -27,7 +27,7 @@ power:
 	# LOOP while(i < n) AKA until(i >= n):
 	slt		$t1,	$t0,	$a1				# if i < n, $t1 = 1
 	beq		$t1,	$zero,	power_el		# if i >= n, exit loop
-	skipLTCheck:
+	#skipLTCheck:
 	mul		$s0,	$s0,	$a0				# result = result * x;
 	addi	$t0,	$t0,	1				# ++i;
 	j		power_l							# loop
